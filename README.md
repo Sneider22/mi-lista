@@ -1,4 +1,4 @@
-# 🎬📚 mi_lista
+# 🎬 mi_lista 📚
 
 ## ❓ ¿Qué es?
 
