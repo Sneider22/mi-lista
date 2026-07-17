@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function ProfileHeader({
   currentUser,
@@ -14,6 +14,7 @@ export default function ProfileHeader({
   onRemoveFriend,
   onCancelRequest
 }) {
+  const [showAvatarSelector, setShowAvatarSelector] = useState(false);
   
   // 10 funny cartoon animal avatars (Kittens from RoboHash)
   const avatarOptions = [
@@ -135,6 +136,17 @@ export default function ProfileHeader({
                 isOwnProfile ? 'border-[#00e054]' : 'border-[#40bcf4]'
               } shadow-lg object-cover bg-[#14181c]`}
             />
+            {isOwnProfile && (
+              <button
+                onClick={() => setShowAvatarSelector(!showAvatarSelector)}
+                title="Editar foto de perfil"
+                className="absolute -bottom-1.5 -right-1.5 p-1 bg-[#2c3440] hover:bg-[#3d4957] border border-[#445566]/80 text-[#00e054] hover:text-[#00ff66] rounded shadow-md cursor-pointer transition-all active:scale-95 z-10"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 18.25a2.25 2.25 0 01-1.022.547l-3.52 1.002a.75.75 0 01-.98-.98l1.002-3.52a2.25 2.25 0 01.548-1.022L16.863 4.487zm0 0L19.5 7.125" />
+                </svg>
+              </button>
+            )}
           </div>
 
           <div className="text-center sm:text-left space-y-3 flex-grow">
@@ -156,28 +168,30 @@ export default function ProfileHeader({
             {isOwnProfile ? (
               <div className="space-y-4">
                 {/* Selector */}
-                <div className="space-y-1.5">
-                  <span className="block text-[10px] uppercase tracking-wider text-[#667788] font-bold text-left">
-                    Seleccionar personaje animal:
-                  </span>
-                  <div className="grid grid-cols-5 gap-1.5 sm:flex sm:flex-wrap">
-                    {avatarOptions.map((av) => {
-                      const savedAvatar = localStorage.getItem('avatar_' + currentUser);
-                      const isSelected = savedAvatar === av.url;
-                      return (
-                        <button
-                          key={av.seed}
-                          onClick={() => handleAvatarClick(av.url)}
-                          className={`w-7 h-7 rounded overflow-hidden border bg-[#14181c] hover:scale-105 active:scale-95 transition-all ${
-                            isSelected ? 'border-[#00e054] ring-2 ring-[#00e054]/20 scale-105' : 'border-[#445566]/60'
-                          }`}
-                        >
-                          <img src={av.url} alt={av.seed} className="w-full h-full object-cover" />
-                        </button>
-                      );
-                    })}
+                {showAvatarSelector && (
+                  <div className="space-y-1.5 animate-slide-down">
+                    <span className="block text-[10px] uppercase tracking-wider text-[#667788] font-bold text-left">
+                      Seleccionar personaje animal:
+                    </span>
+                    <div className="grid grid-cols-5 gap-1.5 sm:flex sm:flex-wrap">
+                      {avatarOptions.map((av) => {
+                        const savedAvatar = localStorage.getItem('avatar_' + currentUser);
+                        const isSelected = savedAvatar === av.url;
+                        return (
+                          <button
+                            key={av.seed}
+                            onClick={() => handleAvatarClick(av.url)}
+                            className={`w-7 h-7 rounded overflow-hidden border bg-[#14181c] hover:scale-105 active:scale-95 transition-all ${
+                              isSelected ? 'border-[#00e054] ring-2 ring-[#00e054]/20 scale-105' : 'border-[#445566]/60'
+                            }`}
+                          >
+                            <img src={av.url} alt={av.seed} className="w-full h-full object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
+                )}
 
                 {/* Friends List section */}
                 <div className="space-y-2 border-t border-[#2c3440] pt-3 mt-3 text-left">
@@ -211,7 +225,7 @@ export default function ProfileHeader({
                     </div>
                   ) : (
                     <span className="block text-[11px] text-[#667788] italic">
-                      No tienes amigos en tu lista. Selecciona otro perfil en la derecha para enviar una solicitud.
+                      No tienes amigos en tu lista.
                     </span>
                   )}
                 </div>
