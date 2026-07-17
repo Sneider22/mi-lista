@@ -1,0 +1,14 @@
+# Node dependencies
+mi-lista-app/node_modules/
+mi-lista-app/dist/
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

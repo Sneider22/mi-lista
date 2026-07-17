@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mi lista</title>
+  <link rel="stylesheet" href="estilos.css">
+  <link rel="icon" type="image/png" href="https://img.icons8.com/ios-filled/32/000000/film-reel.png">
+</head>
+<body>
+  <!-- Login/Register Modal -->
+  <div id="login-modal" class="login-modal">
+    <form id="login-form" class="login-form">
+      <h2>Iniciar Sesión</h2>
+      <input type="text" id="login-usuario" placeholder="Usuario" required>
+      <input type="password" id="login-password" placeholder="Contraseña" required>
+      <button type="submit">Entrar</button>
+      <p id="login-error" class="login-error"></p>
+      <p class="login-register">¿No tienes cuenta? <a href="#" id="show-register">Regístrate</a></p>
+    </form>
+    <form id="register-form" class="login-form" style="display:none;">
+      <h2>Registro</h2>
+      <input type="text" id="register-usuario" placeholder="Usuario" required>
+      <input type="password" id="register-password" placeholder="Contraseña" required>
+      <button type="submit">Registrar</button>
+      <p id="register-error" class="login-error"></p>
+      <p class="login-register">¿Ya tienes cuenta? <a href="#" id="show-login">Inicia sesión</a></p>
+    </form>
+  </div>
+
+  <!-- Modal para agregar -->
+  <div id="add-modal" class="add-modal">
+    <form id="add-form" class="add-form">
+      <h2>Agregar a tu lista</h2>
+      <label>¿Qué quieres agregar?</label>
+      <select id="tipo-item" required>
+        <option value="">Selecciona una opción</option>
+        <option value="serie">Serie/Anime</option>
+        <option value="libro">Libro</option>
+        <option value="pelicula">Película</option>
+      </select>
+      <label>Título</label>
+      <input type="text" id="titulo-item" required placeholder="Título">
+      <div id="autocomplete-menu" class="autocomplete-menu"></div>
+      <div id="extras-container"></div>
+      <div class="add-form-actions">
+        <button type="submit">Agregar</button>
+        <button type="button" id="cancel-add">Cancelar</button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Perfil y comparación -->
+  <div id="perfil-container" class="perfil-container">
+    <div class="perfil-info">
+      <div class="perfil-header">
+        <img id="perfil-avatar" src="https://ui-avatars.com/api/?name=User" alt="Avatar" class="perfil-avatar">
+        <div>
+          <h3>Perfil de <span id="perfil-usuario"></span></h3>
+          <span id="coincidencia-gustos"></span>
+          <div id="barra-coincidencia" class="barra-coincidencia"></div>
+          <div class="avatar-selector" id="avatar-selector" style="margin-top:0.5em;">
+            <span style="font-size:0.9em;color:#a78bfa;">Cambiar avatar:</span>
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=cat" class="avatar-option" data-avatar="https://api.dicebear.com/7.x/bottts/svg?seed=cat" title="Avatar 1">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=dog" class="avatar-option" data-avatar="https://api.dicebear.com/7.x/bottts/svg?seed=dog" title="Avatar 2">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=fox" class="avatar-option" data-avatar="https://api.dicebear.com/7.x/bottts/svg?seed=fox" title="Avatar 3">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=owl" class="avatar-option" data-avatar="https://api.dicebear.com/7.x/bottts/svg?seed=owl" title="Avatar 4">
+            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=alien" class="avatar-option" data-avatar="https://api.dicebear.com/7.x/bottts/svg?seed=alien" title="Avatar 5">
+          </div>
+        </div>
+      </div>
+      <button id="ver-mi-perfil" style="display:none;">Ver mi perfil</button>
+      <div class="perfil-selector">
+        <label for="usuario-selector">Ver perfil de:</label>
+        <select id="usuario-selector"></select>
+      </div>
+    </div>
+  </div>
+
+  <header>
+    <h1>Mi lista</h1>
+    <nav>
+      <ul>
+        <li class="activo" data-section="series">Series/Animes</li>
+        <li data-section="peliculas">Películas</li>
+        <li data-section="libros">Libros</li>
+      </ul>
+    </nav>
+  </header>
+  <div id="buscador-container" style="text-align:center; margin: 1em 0;">
+    <input type="text" id="buscador" placeholder="Buscar por título, categoría o actor..." style="width:90%;max-width:400px;padding:0.6em 1em;border-radius:8px;border:1px solid #a78bfa;">
+  </div>
+  <main id="main-content">
+    <section id="series" class="catalogo activo">
+      <h2>Series/Animes</h2>
+      <div class="serie-list"></div>
+    </section>
+    <section id="peliculas" class="catalogo">
+      <h2>Películas</h2>
+      <div class="pelicula-list"></div>
+    </section>
+    <section id="libros" class="catalogo">
+      <h2>Libros</h2>
+      <div class="libro-list"></div>
+    </section>
+  </main>
+  <footer>
+    <p>Hecho con 💜 por Sneider</p>
+  </footer>
+  <button id="add-item-btn" class="fab" title="Agregar a tu lista">＋</button>
+  <script src="main.js"></script>
+</body>
+</html>

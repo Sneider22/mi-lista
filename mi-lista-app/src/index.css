@@ -1,0 +1,60 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: 'Inter', sans-serif;
+  --font-display: 'Outfit', sans-serif;
+  --color-brand-green: #00e054;
+  --color-brand-orange: #ff8000;
+  --color-brand-blue: #40bcf4;
+  --color-dark-bg: #14181c;
+  --color-dark-panel: #1c252d;
+  --color-dark-card: #2c3440;
+}
+
+/* Global scrollbars for body */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #14181c;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2c3440;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #445566;
+}
+
+body {
+  overflow-y: scroll;
+}
+
+/* Custom scrollbar utility class for small panels (e.g., synopsis) */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #445566;
+  border-radius: 9999px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #667788;
+}
+
+/* Firefox scrollbar compatibility */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #445566 transparent;
+}
