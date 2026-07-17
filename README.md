@@ -6,7 +6,7 @@ Desarrollado y optimizado por **Sneider**.
 
 ---
 
-## 🚀 Arquitectura Tecnológica y Stack
+## Arquitectura Tecnológica y Stack
 
 La aplicación se construyó bajo un enfoque de desarrollo ágil y modular, separando las capas de presentación, lógica reactiva y persistencia local:
 
@@ -21,7 +21,7 @@ La aplicación se construyó bajo un enfoque de desarrollo ágil y modular, sepa
 
 ---
 
-## 🛠️ Características Principales e Ingeniería
+## Características Principales e Ingeniería
 
 Este sistema destaca por implementar patrones avanzados de usabilidad y diseño técnico:
 
@@ -52,7 +52,7 @@ Este sistema destaca por implementar patrones avanzados de usabilidad y diseño 
 
 ---
 
-## 💻 Instalación y Uso Local
+## Instalación y Uso Local
 
 1.  **Instalar dependencias:**
     Asegúrate de estar en el directorio raíz de la aplicación y ejecuta:
