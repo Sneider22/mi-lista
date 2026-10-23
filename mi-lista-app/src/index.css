@@ -2,13 +2,18 @@
 
 @theme {
   --font-sans: 'Inter', sans-serif;
-  --font-display: 'Outfit', sans-serif;
-  --color-brand-green: #00e054;
-  --color-brand-orange: #ff8000;
-  --color-brand-blue: #40bcf4;
-  --color-dark-bg: #14181c;
-  --color-dark-panel: #1c252d;
-  --color-dark-card: #2c3440;
+  --font-display: 'Fraunces', Georgia, serif;
+  /* Paleta: carbón cálido, crema y un acento ámbar */
+  --color-accent: #e8a33d;
+  --color-sand: #d8c7a6;
+  --color-ink: #131211;
+  --color-panel: #1c1a18;
+  --color-card: #2a2724;
+  /* Estados de cada elemento */
+  --color-done: #9cc5a1;
+  --color-progress: #e8a33d;
+  --color-pending: #9db0d1;
+  --color-dropped: #d08a8a;
 }
 
 /* Global scrollbars for body */
@@ -18,16 +23,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: #14181c;
+  background: #131211;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #2c3440;
+  background: #2a2724;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #445566;
+  background: #4a4540;
 }
 
 body {
@@ -45,16 +50,25 @@ body {
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #445566;
+  background: #4a4540;
   border-radius: 9999px;
 }
 
 .scrollbar-thin::-webkit-scrollbar-thumb:hover {
-  background: #667788;
+  background: #8f877c;
 }
 
 /* Firefox scrollbar compatibility */
 .scrollbar-thin {
   scrollbar-width: thin;
-  scrollbar-color: #445566 transparent;
+  scrollbar-color: #4a4540 transparent;
+}
+
+/* Barras deslizables sin barra visible (pestañas y filtros en el celular) */
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }

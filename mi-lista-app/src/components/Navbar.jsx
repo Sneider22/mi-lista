@@ -33,22 +33,17 @@ export default function Navbar({
   }, []);
 
   return (
-    <header className="bg-[#1c252d] border-b border-[#2c3440] sticky top-0 z-40 shadow-md">
+    <header className="bg-[#131211]/90 backdrop-blur-md border-b border-[#2a2724] sticky top-0 z-40">
       <div className="max-w-6xl mx-auto px-4 md:px-8">
         
         {/* Top bar: Brand logo & Session controls */}
-        <div className="flex items-center justify-between py-4 border-b border-[#2c3440]/50">
-          <div className="flex items-center gap-2.5">
-            <svg className="w-5.5 h-5.5 text-[#00e054]" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-            </svg>
-            <h1 className="font-display text-xl font-black tracking-widest text-white m-0">
-              MI LISTA
-            </h1>
-          </div>
+        <div className="flex items-center justify-between py-3.5">
+          <h1 className="font-display text-2xl font-medium text-[#efe8dc] m-0 tracking-tight">
+            <span className="italic text-[#e8a33d]">Mi</span> Lista
+          </h1>
 
           <div className="flex items-center gap-4">
-            <span className="hidden sm:inline text-xs text-[#9ab] font-medium uppercase tracking-wider">
+            <span className="hidden sm:inline text-xs text-[#bdb5a9] font-medium ">
               Sesión: <strong className="text-white normal-case">{activeUser}</strong>
             </span>
 
@@ -56,26 +51,26 @@ export default function Navbar({
             <div className="relative" ref={dropdownRef}>
               <button
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-1.5 rounded bg-[#2c3440] hover:bg-[#3d4957] text-[#9ab] hover:text-white transition-all relative cursor-pointer"
-                title="Notificaciones de Amistad"
+                className="p-1.5 rounded-lg bg-[#2a2724] hover:bg-[#36322e] text-[#bdb5a9] hover:text-white transition-all relative cursor-pointer"
+                title="Notificaciones de amistad"
               >
                 <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M14.857 17.082a23.848 23.848 0 005.454-1.31A8.967 8.967 0 0118 9.75v-.7V9A6 6 0 006 9v.75a8.967 8.967 0 01-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 01-5.714 0m5.714 0a3 3 0 11-5.714 0" />
                 </svg>
                 {pendingRequests.length > 0 && (
-                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#00e054] rounded-full ring-2 ring-[#1c252d]" />
+                  <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-[#e8a33d] rounded-full ring-2 ring-[#1c1a18]" />
                 )}
               </button>
 
               {/* Notification Menu */}
               {showNotifications && (
-                <div className="fixed top-16 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-[#1c252d] border border-[#2c3440] rounded-xl shadow-2xl z-50 py-3 md:absolute md:top-auto md:left-auto md:right-0 md:translate-x-0 md:w-72 md:mt-2">
-                  <div className="px-4 pb-2 border-b border-[#2c3440] mb-2 flex justify-between items-center">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#667788]">
-                      Solicitudes de Amistad
+                <div className="fixed top-16 left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-[#1c1a18] border border-[#2a2724] rounded-xl shadow-2xl z-50 py-3 md:absolute md:top-auto md:left-auto md:right-0 md:translate-x-0 md:w-72 md:mt-2">
+                  <div className="px-4 pb-2 border-b border-[#2a2724] mb-2 flex justify-between items-center">
+                    <span className="text-[10px] font-bold text-[#8f877c]">
+                      Solicitudes de amistad
                     </span>
                     {pendingRequests.length > 0 && (
-                      <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-[#40bcf4] rounded">
+                      <span className="px-1.5 py-0.5 text-[9px] font-bold text-white bg-[#d8c7a6] rounded-lg">
                         {pendingRequests.length}
                       </span>
                     )}
@@ -86,7 +81,7 @@ export default function Navbar({
                       pendingRequests.map((sender) => (
                         <div
                           key={sender}
-                          className="p-2 bg-[#2c3440]/30 border border-[#2c3440] rounded flex items-center justify-between gap-3 mb-1.5 last:mb-0"
+                          className="p-2 bg-[#2a2724]/30 border border-[#2a2724] rounded-lg flex items-center justify-between gap-3 mb-1.5 last:mb-0"
                         >
                           <span className="text-xs font-semibold text-white truncate">
                             {sender}
@@ -97,7 +92,7 @@ export default function Navbar({
                                 onAcceptRequest(sender);
                                 setShowNotifications(false);
                               }}
-                              className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-[#14181c] bg-[#00e054] hover:bg-[#00c048] rounded cursor-pointer transition"
+                              className="px-2 py-1 text-[9px] font-bold text-[#131211] bg-[#e8a33d] hover:bg-[#d48f2a] rounded-lg cursor-pointer transition"
                             >
                               Aceptar
                             </button>
@@ -105,7 +100,7 @@ export default function Navbar({
                               onClick={() => {
                                 onDeclineRequest(sender);
                               }}
-                              className="px-2 py-1 text-[9px] font-bold uppercase tracking-wider text-white bg-[#2c3440] hover:bg-[#3d4957] border border-[#445566]/60 rounded cursor-pointer transition"
+                              className="px-2 py-1 text-[9px] font-bold text-white bg-[#2a2724] hover:bg-[#36322e] border border-[#4a4540]/60 rounded-lg cursor-pointer transition"
                             >
                               Ignorar
                             </button>
@@ -113,7 +108,7 @@ export default function Navbar({
                         </div>
                       ))
                     ) : (
-                      <div className="py-6 text-center text-xs text-[#667788]">
+                      <div className="py-6 text-center text-xs text-[#8f877c]">
                         No tienes solicitudes pendientes
                       </div>
                     )}
@@ -124,7 +119,7 @@ export default function Navbar({
             
             <button
               onClick={onLogout}
-              className="px-3.5 py-1.5 text-xs font-bold text-white hover:text-rose-400 bg-[#2c3440] hover:bg-rose-950/20 border border-[#445566]/60 hover:border-rose-900 rounded transition-all cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-bold text-white hover:text-rose-400 bg-[#2a2724] hover:bg-rose-950/20 border border-[#4a4540]/60 hover:border-rose-900 rounded-lg transition-all cursor-pointer"
             >
               Salir
             </button>
@@ -132,20 +127,20 @@ export default function Navbar({
         </div>
 
         {/* Bottom bar: Navigation tabs & Search bar */}
-        <div className="flex flex-col md:flex-row md:items-center justify-between py-3 gap-3">
+        <div className="flex flex-col md:flex-row md:items-center justify-between pb-3 gap-3">
           {/* Section tabs */}
-          <nav>
-            <ul className="flex items-center gap-1 -ml-2">
+          <nav className="-mx-4 px-4 overflow-x-auto no-scrollbar md:mx-0 md:px-0">
+            <ul className="flex items-center gap-1.5">
               {sections.map((sec) => {
                 const isActive = activeSection === sec.id;
                 return (
                   <li key={sec.id}>
                     <button
                       onClick={() => setActiveSection(sec.id)}
-                      className={`px-4 py-2 text-xs font-bold uppercase tracking-wider rounded transition-all cursor-pointer ${
+                      className={`whitespace-nowrap px-4 py-1.5 text-sm font-medium rounded-full transition-all cursor-pointer ${
                         isActive
-                          ? 'text-[#00e054] bg-[#2c3440]'
-                          : 'text-[#9ab] hover:text-white hover:bg-[#2c3440]/30'
+                          ? 'text-[#131211] bg-[#efe8dc]'
+                          : 'text-[#bdb5a9] hover:text-[#efe8dc] hover:bg-[#2a2724]'
                       }`}
                     >
                       {sec.label}
@@ -158,7 +153,7 @@ export default function Navbar({
 
           {/* Search box */}
           <div className="relative w-full md:max-w-xs">
-            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[#667788]">
+            <span className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-[#8f877c]">
               <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
               </svg>
@@ -167,8 +162,8 @@ export default function Navbar({
               type="text"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              placeholder="Buscar localmente en tu lista..."
-              className="w-full pl-9 pr-4 py-2 bg-[#2c3440] border border-[#445566]/80 rounded text-xs text-white placeholder-[#667788] focus:outline-none focus:border-[#40bcf4] focus:ring-1 focus:ring-[#40bcf4] transition"
+              placeholder="Buscar en esta lista…"
+              className="w-full pl-9 pr-4 py-2 bg-[#1c1a18] border border-[#2a2724] rounded-full text-sm text-white placeholder-[#8f877c] focus:outline-none focus:border-[#d8c7a6] focus:ring-1 focus:ring-[#d8c7a6] transition"
             />
           </div>
 

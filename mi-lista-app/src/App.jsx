@@ -7,8 +7,7 @@ import AddItemModal from './components/AddItemModal';
 import DetailModal from './components/DetailModal';
 import Toast from './components/Toast';
 import ConfirmationModal from './components/ConfirmationModal';
-
-const TMDB_API_KEY = 'e7fc358f1fb84ae5a56fda2f30e11a30';
+import { TMDB_API_KEY } from './config';
 
 export default function App() {
   const [activeUser, setActiveUser] = useState(() => localStorage.getItem('usuario_activo') || '');
@@ -51,18 +50,21 @@ export default function App() {
   // Local state trigger to re-read avatar updates
   const [avatarUpdateTrigger, setAvatarUpdateTrigger] = useState(0);
 
-  // Fetch TMDB genres list on mount
+  // Géneros de TMDB: las series usan códigos propios (por ejemplo "Sci-Fi & Fantasy"),
+  // así que se cargan las dos listas, la de películas y la de series
   useEffect(() => {
-    fetch(`https://api.themoviedb.org/3/genre/movie/list?api_key=${TMDB_API_KEY}&language=es-ES`)
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.genres) {
-          const map = {};
-          data.genres.forEach((g) => {
-            map[g.id] = g.name;
-          });
-          setGenresMap(map);
-        }
+    const lists = ['movie', 'tv'].map((kind) =>
+      fetch(`https://api.themoviedb.org/3/genre/${kind}/list?api_key=${TMDB_API_KEY}&language=es-ES`)
+        .then((res) => res.json())
+        .then((data) => data.genres || [])
+    );
+    Promise.all(lists)
+      .then(([movieGenres, tvGenres]) => {
+        const map = {};
+        [...movieGenres, ...tvGenres].forEach((g) => {
+          map[g.id] = g.name;
+        });
+        setGenresMap(map);
       })
       .catch((err) => console.error('Error fetching TMDB genres:', err));
   }, []);
@@ -113,9 +115,12 @@ export default function App() {
     setActiveUser(username);
     setSelectedProfile(username);
 
-    // Refresh user lists
+    // Vuelve a leer todo del navegador: al entrar como invitado se acaban de crear sus datos de ejemplo
     const usuarios = JSON.parse(localStorage.getItem('usuarios') || '{}');
     setAllUsers(Object.keys(usuarios));
+    setUserListings(JSON.parse(localStorage.getItem('listas') || '{}'));
+    setFriends(JSON.parse(localStorage.getItem('amigos') || '{}'));
+    setFriendRequests(JSON.parse(localStorage.getItem('solicitudes') || '{}'));
     showToast(`Bienvenido, ${username}`);
   };
 
@@ -263,7 +268,7 @@ export default function App() {
   const activeUserFriendsList = friends[activeUser] || [];
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#14181c] text-[#9ab] selection:bg-[#00e054] selection:text-black">
+    <div className="min-h-screen flex flex-col bg-[#131211] text-[#bdb5a9] selection:bg-[#e8a33d] selection:text-black">
       {/* If not logged in, force show Auth Modal */}
       {!activeUser && (
         <AuthModal onLoginSuccess={handleLoginSuccess} showToast={showToast} />
@@ -317,13 +322,13 @@ export default function App() {
           </main>
 
           {/* Footer (Formal - no emojis) */}
-          <footer className="bg-[#1c252d] border-t border-[#2c3440] py-6 text-center text-xs text-[#667788] uppercase tracking-wider">
+          <footer className="bg-[#1c1a18] border-t border-[#2a2724] py-6 text-center text-xs text-[#8f877c] ">
             <div className="max-w-6xl mx-auto px-4 space-y-1.5 font-semibold">
               <p>
                 Desarrollado por Sneider
               </p>
-              <p className="text-[10px] text-[#445566] normal-case font-normal">
-                Datos provistos por TMDB API y Open Library API.
+              <p className="text-[10px] text-[#4a4540] normal-case font-normal">
+                Datos de TMDB, Open Library y MusicBrainz. Las cuentas y listas se guardan solo en este navegador.
               </p>
             </div>
           </footer>
@@ -333,7 +338,7 @@ export default function App() {
             <button
               onClick={() => setIsAddModalOpen(true)}
               title="Agregar a tu lista"
-              className="fixed bottom-6 right-6 w-14 h-14 bg-[#00e054] hover:bg-[#00c048] text-[#14181c] rounded-full shadow-lg shadow-[#00e054]/25 flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-30 cursor-pointer"
+              className="fixed bottom-6 right-6 w-14 h-14 bg-[#e8a33d] hover:bg-[#d48f2a] text-[#131211] rounded-full shadow-lg shadow-[#e8a33d]/25 flex items-center justify-center hover:scale-105 active:scale-95 transition-all z-30 cursor-pointer"
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

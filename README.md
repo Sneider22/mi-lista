@@ -1,74 +1,67 @@
-# Mi Lista — Catálogo Personal de Medios & Red Social Simulada
+# Mi Lista
 
-¡Bienvenido a **Mi Lista**! Este proyecto es un sistema premium para catalogar y clasificar consumos culturales (series, películas, libros y música) y conectarte socialmente con amigos. Es el resultado de una migración y refactorización arquitectónica completa hacia tecnologías modernas y estándares de ingeniería de software robustos.
+Catálogo personal de **series, películas, libros y música**. Buscas un título, lo agregas a tu lista con su estado (visto, viendo, por ver, abandonado) y puedes ver las listas de tus amigos y qué tan parecidos son sus gustos.
 
-Desarrollado y optimizado por **Sneider**.
+Fue uno de mis primeros proyectos grandes con CRUD: empezó en JavaScript puro y luego lo pasé a React.
 
----
+**[mi-lista-six.vercel.app](https://mi-lista-six.vercel.app)** · se puede probar sin registrarse con **Entrar como invitado**.
 
-## Arquitectura Tecnológica y Stack
-
-La aplicación se construyó bajo un enfoque de desarrollo ágil y modular, separando las capas de presentación, lógica reactiva y persistencia local:
-
-*   **Core:** React 19 + Vite (compilación y recarga en caliente de rendimiento ultra rápido).
-*   **Diseño:** Tailwind CSS v4 (utilizando el nuevo motor de compilación CSS nativo, variables unificadas en `:root` y diseño responsivo fluido).
-*   **Estilo Visual:** Inspirado en las mejores prácticas de UI oscuras (como *Letterboxd* y *Goodreads*), usando una paleta monocromática elegante, acentos en verde esmeralda y cian, scrollbars personalizados y exclusión de emojis en favor de iconos vectoriales SVG limpios.
-*   **Bases de Datos & APIs de Terceros:**
-    *   **TMDB API:** Consulta metadata detallada de películas y series (sinopsis, fecha de estreno, reparto de actores, géneros y portadas en alta resolución).
-    *   **Open Library API:** Buscador de libros ampliado mediante consultas generales (`q=`), extrayendo el año, el autor y enlazando portadas mediante Cover ID.
-    *   **MusicBrainz API + Cover Art Archive:** Sistema de consulta de álbumes y singles 100% gratuito y sin llave de acceso. Conexión automatizada a portadas con sistema tolerante a fallos (fallbacks automáticos a iconos SVG).
-*   **Persistencia:** Modelo de almacenamiento estructurado de datos persistido en el cliente a través del `localStorage` del navegador.
+![Mi Lista](docs/captura.png)
 
 ---
 
-## Características Principales e Ingeniería
+## Qué hace
 
-Este sistema destaca por implementar patrones avanzados de usabilidad y diseño técnico:
+- **Cuatro secciones:** series, películas, libros y música, cada una con sus propios estados (*Visto / Viendo / Por ver* en películas y series, *Leído / Leyendo / Por leer* en libros, *Escuchado / Escuchando / Por escuchar* en música).
+- **Búsqueda con autocompletado** en tres APIs gratuitas:
+  - [TMDB](https://www.themoviedb.org/) para películas y series: póster, sinopsis, fecha, géneros y reparto.
+  - [Open Library](https://openlibrary.org/) para libros: autor, año y portada.
+  - [MusicBrainz](https://musicbrainz.org/) y Cover Art Archive para álbumes: artista, año y portada.
+- **Detalle de cada elemento** con el título original, los géneros y la opción de cambiar el estado o eliminarlo.
+- **Filtros** por estado y búsqueda dentro de la propia lista.
+- **Amigos:** enviar, aceptar, ignorar y cancelar solicitudes, y visitar la lista de un amigo.
+- **Afinidad de gustos** entre dos perfiles:
+  - 70% por títulos en común del mismo tipo (el libro *Dune* no cuenta como la película *Dune*).
+  - 30% por géneros de películas y series compartidos.
+- **Modo invitado:** una lista de ejemplo con más de 30 títulos, dos amigos con gustos distintos (Valeria y Mateo) y una solicitud de amistad pendiente (Camila), para recorrer toda la app sin crear cuenta.
 
-### 1. Sistema CRUD y Edición de Estados
-*   **Formulario Dinámico:** Selección integrada del tipo de elemento y autocompletado inteligente conforme el usuario escribe.
-*   **Clasificación Localizada:** Selector de estados de consumo con terminología contextualizada al tipo de recurso:
-    *   *Películas/Series:* Visto, Viendo, Por ver, Abandonado.
-    *   *Libros:* Leído, Leyendo, Por leer, Abandonado.
-    *   *Música:* Escuchado, Escuchando, Por escuchar, Abandonado.
-*   **Edición y Eliminación en Detalle:** Edición instantánea del estado de consumo desde el modal de detalles del elemento y botón de borrado de recursos integrado en el pie, solucionando las limitaciones de pantallas móviles (donde no existe la acción de *hover*).
+## Cómo guarda los datos
 
-### 2. Notificaciones Propias del Sistema (Purga de Componentes Nativos)
-*   **Toast Alert System:** Componente modular que muestra notificaciones temporizadas deslizables desde la parte superior central de la ventana, con temporizador de desvanecimiento automático (4 segundos).
-*   **System Confirmation Overlays:** Caja de diálogo modular que reemplaza al clásico `confirm()` del navegador por un modal nativo estilizado en escala de grises con fondo translúcido y botones de rechazo/aceptación.
+Todo vive en el `localStorage` del navegador: no hay servidor ni base de datos. Eso significa que:
 
-### 3. Red Social Simulada y Algoritmo de Afinidad
-*   **Grafo de Amistad Bidireccional:** Lógica en Javascript para establecer relaciones de amistad mutua en localStorage, soportando el ciclo de vida de una solicitud: Enviar, Recibir, Cancelar Solicitud, Aceptar e Ignorar.
-*   **Menú de Solicitudes Centrado:** Campanita de alertas en la barra de navegación con indicador verde flotante. El contenedor se centra automáticamente en móviles (`fixed` centrado en viewport) y se comporta como popover lateral en monitores de escritorio.
-*   **Navegación de Amigos:** Lista interactiva de amigos en el perfil del usuario. Dar clic en el badge de un amigo te redirige a su biblioteca personal de forma instantánea.
-*   **Taste Affinity index:** Algoritmo que compara la biblioteca del perfil seleccionado contra tu biblioteca personal. Devuelve un porcentaje matemático de coincidencia de gustos basado en categorías, títulos y géneros compartidos.
+- Las cuentas, listas y amistades existen **solo en el navegador donde se crearon**. La parte social funciona entre cuentas creadas en el mismo navegador; es una simulación, no una red social real.
+- Las contraseñas **no se guardan en texto**: se guarda un hash SHA-256 con una sal aleatoria por usuario. Aun así, como todo está en el navegador, conviene no usar una contraseña real.
+- La clave de TMDB está en el código (`src/config.js`). En una app sin servidor no se puede ocultar; para protegerla habría que pasar las búsquedas por una función de servidor.
 
-### 4. Seguridad de Cuentas (Auth)
-*   **Registro Avanzado:** Validador con requerimientos de complejidad en contraseñas (mínimo de 3 caracteres, al menos una letra mayúscula y al menos un número).
-*   **Visualizador de Contraseñas:** Campo de contraseña equipado con un alternador dinámico de visibilidad (icono del ojo en formato SVG) para mejorar la usabilidad al ingresar o registrarte.
+## Tecnologías
 
-### 5. Control de Desplazamientos (Background Scroll Lock)
-*   *Scroll Lock* inteligente implementado en la raíz de los componentes. Al abrir cualquier modal (detalles, agregar elemento o confirmaciones), se inyecta la directiva `overflow-hidden` al cuerpo de la página, congelando el fondo trasero y habilitando el scroll únicamente dentro de la ventana activa para evitar la sobre-navegación.
+React 19, Vite y Tailwind CSS 4.
+
+## Uso local
+
+```bash
+cd mi-lista-app
+npm install
+npm run dev
+```
+
+Para generar la versión de producción: `npm run build` (queda en `mi-lista-app/dist`).
+
+## Estructura
+
+```
+mi-lista/
+├── docs/              # Captura del README
+└── mi-lista-app/
+    ├── public/        # Ícono
+    └── src/
+        ├── components/  # Interfaz: navegación, perfil, catálogo, ventanas de agregar y detalle
+        ├── data/demo.js # Lista de ejemplo del modo invitado
+        ├── lib/auth.js  # Registro e inicio de sesión con contraseñas cifradas
+        ├── config.js    # Clave de TMDB
+        └── App.jsx      # Estado de la app y lógica de listas y amigos
+```
 
 ---
 
-## Instalación y Uso Local
-
-1.  **Instalar dependencias:**
-    Asegúrate de estar en el directorio raíz de la aplicación y ejecuta:
-    ```bash
-    cd mi-lista-app
-    npm install
-    ```
-
-2.  **Iniciar el entorno de desarrollo:**
-    Ejecuta el servidor de desarrollo local de Vite:
-    ```bash
-    npm run dev
-    ```
-
-3.  **Compilar para producción:**
-    Genera el empaquetado final optimizado (HTML, CSS y JS compilado):
-    ```bash
-    npm run build
-    ```
+Sneider Araque

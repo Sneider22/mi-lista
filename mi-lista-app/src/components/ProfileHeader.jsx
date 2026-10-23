@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import ProfileSwitcher from './ProfileSwitcher';
+import FriendsPreview from './FriendsPreview';
 
 export default function ProfileHeader({
   currentUser,
@@ -41,16 +43,27 @@ export default function ProfileHeader({
     window.dispatchEvent(new Event('storage'));
   };
 
-  // Compatibility calculation
-  const calculateCompatibility = () => {
-    const listA = (userListings[currentUser] || []).map(item => item.titulo.toLowerCase());
-    const listB = (userListings[selectedProfile] || []).map(item => item.titulo.toLowerCase());
-    
+  // Afinidad entre dos catálogos (0-100):
+  // - 70%: títulos en común, contando solo si son del mismo tipo (el libro "Dune" no es la película "Dune")
+  // - 30%: géneros de películas y series que comparten (índice de Jaccard)
+  const calculateCompatibility = (other = selectedProfile) => {
+    const listA = userListings[currentUser] || [];
+    const listB = userListings[other] || [];
     if (listA.length === 0 || listB.length === 0) return 0;
-    
-    const common = listA.filter(title => listB.includes(title));
-    const total = Math.max(listA.length, listB.length);
-    return Math.round((common.length / total) * 100);
+
+    const key = (item) => `${item.tipo}:${item.titulo.trim().toLowerCase()}`;
+    const keysB = new Set(listB.map(key));
+    const common = listA.filter((item) => keysB.has(key(item))).length;
+    const titleScore = common / Math.max(listA.length, listB.length);
+
+    const genres = (list) => new Set(list.flatMap((item) => (item.tmdb && item.tmdb.genre_ids) || []));
+    const genresA = genres(listA);
+    const genresB = genres(listB);
+    const union = new Set([...genresA, ...genresB]);
+    const sharedGenres = [...genresA].filter((g) => genresB.has(g)).length;
+    const genreScore = union.size ? sharedGenres / union.size : 0;
+
+    return Math.round((0.7 * titleScore + 0.3 * genreScore) * 100);
   };
 
   const currentAvatar = getAvatarUrl(selectedProfile);
@@ -69,14 +82,14 @@ export default function ProfileHeader({
     if (isFriend) {
       return (
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#00e054] bg-[#00e054]/10 border border-[#00e054]/20 rounded">
-            Conexión: Amigos
+          <span className="px-3 py-1 text-[10px] font-bold text-[#e8a33d] bg-[#e8a33d]/10 border border-[#e8a33d]/20 rounded-lg">
+            Son amigos
           </span>
           <button
             onClick={() => onRemoveFriend(selectedProfile)}
-            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#9ab] hover:text-white bg-[#2c3440] hover:bg-rose-950/20 border border-[#445566]/60 hover:border-rose-900 rounded cursor-pointer transition"
+            className="px-3 py-1.5 text-[10px] font-bold text-[#bdb5a9] hover:text-white bg-[#2a2724] hover:bg-rose-950/20 border border-[#4a4540]/60 hover:border-rose-900 rounded-lg cursor-pointer transition"
           >
-            Eliminar Amigo
+            Eliminar amigo
           </button>
         </div>
       );
@@ -87,9 +100,9 @@ export default function ProfileHeader({
         <div className="flex items-center gap-2">
           <button
             onClick={() => onAcceptRequest(selectedProfile)}
-            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#14181c] bg-[#00e054] hover:bg-[#00c048] rounded cursor-pointer transition"
+            className="px-3 py-1.5 text-[10px] font-bold text-[#131211] bg-[#e8a33d] hover:bg-[#d48f2a] rounded-lg cursor-pointer transition"
           >
-            Aceptar Solicitud
+            Aceptar solicitud
           </button>
         </div>
       );
@@ -98,12 +111,12 @@ export default function ProfileHeader({
     if (hasSentRequest) {
       return (
         <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#9ab] bg-[#2c3440] border border-[#445566]/30 rounded">
+          <span className="px-3 py-1.5 text-[10px] font-bold text-[#bdb5a9] bg-[#2a2724] border border-[#4a4540]/30 rounded-lg">
             Solicitud Pendiente
           </span>
           <button
             onClick={() => onCancelRequest(selectedProfile)}
-            className="px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#667788] hover:text-[#9ab] bg-transparent border border-[#445566]/20 rounded cursor-pointer transition"
+            className="px-3 py-1.5 text-[10px] font-bold text-[#8f877c] hover:text-[#bdb5a9] bg-transparent border border-[#4a4540]/20 rounded-lg cursor-pointer transition"
           >
             Cancelar
           </button>
@@ -114,33 +127,33 @@ export default function ProfileHeader({
     return (
       <button
         onClick={() => onSendRequest(selectedProfile)}
-        className="px-3.5 py-2 text-[10px] font-bold uppercase tracking-wider text-[#14181c] bg-[#40bcf4] hover:bg-[#329dc9] rounded cursor-pointer transition"
+        className="px-3.5 py-2 text-[10px] font-bold text-[#131211] bg-[#d8c7a6] hover:bg-[#c4b28e] rounded-lg cursor-pointer transition"
       >
-        Agregar Amigo
+        Agregar amigo
       </button>
     );
   };
 
   return (
-    <div className="bg-[#1c252d]/60 border border-[#2c3440] rounded-xl p-6 mb-8 max-w-6xl mx-auto shadow-md">
+    <div className="bg-[#1c1a18] border border-[#2a2724] rounded-2xl p-4 sm:p-6 mb-8 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row items-start justify-between gap-6">
         
         {/* Profile Details & Avatar selection */}
-        <div className="flex flex-col sm:flex-row items-start gap-5 w-full md:w-auto">
+        <div className="flex flex-row items-start gap-4 sm:gap-5 w-full md:w-auto">
           {/* Avatar frame */}
           <div className="relative flex-shrink-0">
             <img
               src={currentAvatar}
               alt="Avatar"
-              className={`w-20 h-20 rounded-lg border-2 ${
-                isOwnProfile ? 'border-[#00e054]' : 'border-[#40bcf4]'
-              } shadow-lg object-cover bg-[#14181c]`}
+              className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 ${
+                isOwnProfile ? 'border-[#e8a33d]' : 'border-[#d8c7a6]'
+              } shadow-lg object-cover bg-[#131211]`}
             />
             {isOwnProfile && (
               <button
                 onClick={() => setShowAvatarSelector(!showAvatarSelector)}
                 title="Editar foto de perfil"
-                className="absolute -bottom-1.5 -right-1.5 p-1 bg-[#2c3440] hover:bg-[#3d4957] border border-[#445566]/80 text-[#00e054] hover:text-[#00ff66] rounded shadow-md cursor-pointer transition-all active:scale-95 z-10"
+                className="absolute -bottom-1.5 -right-1.5 p-1 bg-[#2a2724] hover:bg-[#36322e] border border-[#4a4540]/80 text-[#e8a33d] hover:text-[#f2b95c] rounded-lg shadow-md cursor-pointer transition-all active:scale-95 z-10"
               >
                 <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.83 18.25a2.25 2.25 0 01-1.022.547l-3.52 1.002a.75.75 0 01-.98-.98l1.002-3.52a2.25 2.25 0 01.548-1.022L16.863 4.487zm0 0L19.5 7.125" />
@@ -149,14 +162,14 @@ export default function ProfileHeader({
             )}
           </div>
 
-          <div className="text-center sm:text-left space-y-3 flex-grow">
-            <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
-              <h3 className="text-lg font-bold text-white font-display">
-                Perfil de <span className="text-[#40bcf4]">{selectedProfile}</span>
+          <div className="text-left space-y-3 flex-grow min-w-0">
+            <div className="flex flex-wrap items-center gap-2.5">
+              <h3 className="text-xl sm:text-2xl font-medium text-[#efe8dc] font-display">
+                Perfil de <span className="text-[#d8c7a6]">{selectedProfile}</span>
               </h3>
               {isOwnProfile ? (
-                <span className="px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#00e054] bg-[#00e054]/10 border border-[#00e054]/20 rounded">
-                  Usuario Activo
+                <span className="px-2 py-0.5 text-[10px] font-bold text-[#e8a33d] bg-[#e8a33d]/10 border border-[#e8a33d]/20 rounded-lg">
+                  Tu perfil
                 </span>
               ) : (
                 /* Friendship Badge */
@@ -170,7 +183,7 @@ export default function ProfileHeader({
                 {/* Selector */}
                 {showAvatarSelector && (
                   <div className="space-y-1.5 animate-slide-down">
-                    <span className="block text-[10px] uppercase tracking-wider text-[#667788] font-bold text-left">
+                    <span className="block text-[10px] text-[#8f877c] font-bold text-left">
                       Seleccionar personaje animal:
                     </span>
                     <div className="grid grid-cols-5 gap-1.5 sm:flex sm:flex-wrap">
@@ -181,8 +194,8 @@ export default function ProfileHeader({
                           <button
                             key={av.seed}
                             onClick={() => handleAvatarClick(av.url)}
-                            className={`w-7 h-7 rounded overflow-hidden border bg-[#14181c] hover:scale-105 active:scale-95 transition-all ${
-                              isSelected ? 'border-[#00e054] ring-2 ring-[#00e054]/20 scale-105' : 'border-[#445566]/60'
+                            className={`w-7 h-7 rounded-lg overflow-hidden border bg-[#131211] hover:scale-105 active:scale-95 transition-all ${
+                              isSelected ? 'border-[#e8a33d] ring-2 ring-[#e8a33d]/20 scale-105' : 'border-[#4a4540]/60'
                             }`}
                           >
                             <img src={av.url} alt={av.seed} className="w-full h-full object-cover" />
@@ -193,55 +206,30 @@ export default function ProfileHeader({
                   </div>
                 )}
 
-                {/* Friends List section */}
-                <div className="space-y-2 border-t border-[#2c3440] pt-3 mt-3 text-left">
-                  <span className="block text-[10px] uppercase tracking-wider text-[#667788] font-bold">
-                    Mis Amigos ({currentUserFriends.length}):
-                  </span>
-                  {currentUserFriends.length > 0 ? (
-                    <div className="flex flex-wrap gap-2 max-w-xl">
-                      {currentUserFriends.map((friend) => (
-                        <div
-                          key={friend}
-                          className="flex items-center gap-2 bg-[#2c3440]/60 hover:bg-[#2c3440] border border-[#2c3440] pl-2.5 pr-1.5 py-1 rounded text-xs text-white"
-                        >
-                          <button
-                            onClick={() => setSelectedProfile(friend)}
-                            className="font-bold text-[#40bcf4] hover:underline cursor-pointer text-xs"
-                          >
-                            {friend}
-                          </button>
-                          <button
-                            onClick={() => onRemoveFriend(friend)}
-                            title="Eliminar amigo"
-                            className="text-[#667788] hover:text-rose-500 cursor-pointer transition-colors p-0.5 rounded hover:bg-[#14181c]"
-                          >
-                            <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="3" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                          </button>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <span className="block text-[11px] text-[#667788] italic">
-                      No tienes amigos en tu lista.
-                    </span>
-                  )}
+                {/* Amigos: una línea compacta que abre la lista completa */}
+                <div className="border-t border-[#2a2724] pt-3 mt-3">
+                  <FriendsPreview
+                    friends={currentUserFriends}
+                    getAvatarUrl={getAvatarUrl}
+                    userListings={userListings}
+                    affinityWith={calculateCompatibility}
+                    onOpenProfile={setSelectedProfile}
+                    onRemoveFriend={onRemoveFriend}
+                  />
                 </div>
 
               </div>
             ) : (
               /* Compatibility display (For others) */
-              <div className="space-y-1.5 max-w-xs mx-auto sm:mx-0">
+              <div className="space-y-1.5 max-w-xs">
                 <div className="flex justify-between items-center text-xs font-semibold">
-                  <span className="text-[#9ab] uppercase tracking-wider text-[10px]">Indice de coincidencia:</span>
-                  <span className="text-[#00e054]">{compatibility}%</span>
+                  <span className="text-[#bdb5a9] text-[10px]">Afinidad de gustos</span>
+                  <span className="text-[#e8a33d]">{compatibility}%</span>
                 </div>
                 {/* Visual affinity bar */}
-                <div className="w-48 h-1.5 bg-[#2c3440] rounded-full overflow-hidden border border-[#445566]/20">
+                <div className="w-48 h-1.5 bg-[#2a2724] rounded-full overflow-hidden border border-[#4a4540]/20">
                   <div
-                    className="h-full bg-gradient-to-r from-[#40bcf4] to-[#00e054] transition-all duration-500"
+                    className="h-full bg-gradient-to-r from-[#d8c7a6] to-[#e8a33d] transition-all duration-500"
                     style={{ width: `${compatibility}%` }}
                   />
                 </div>
@@ -255,29 +243,20 @@ export default function ProfileHeader({
           {!isOwnProfile && (
             <button
               onClick={() => setSelectedProfile(currentUser)}
-              className="w-full sm:w-auto px-4 py-2 text-xs font-bold uppercase tracking-wider text-[#14181c] bg-[#40bcf4] hover:bg-[#329dc9] rounded transition cursor-pointer"
+              className="w-full sm:w-auto px-4 py-2 text-xs font-bold text-[#131211] bg-[#d8c7a6] hover:bg-[#c4b28e] rounded-lg transition cursor-pointer"
             >
               Volver a mi perfil
             </button>
           )}
 
-          <div className="flex items-center gap-2 w-full sm:w-auto bg-[#2c3440]/60 border border-[#445566]/40 px-3 py-1.5 rounded">
-            <label htmlFor="user-select" className="text-[10px] text-[#667788] uppercase tracking-wider font-bold whitespace-nowrap">
-              Ver perfil:
-            </label>
-            <select
-              id="user-select"
-              value={selectedProfile}
-              onChange={(e) => setSelectedProfile(e.target.value)}
-              className="bg-transparent border-0 text-white text-xs font-bold focus:ring-0 focus:outline-none cursor-pointer"
-            >
-              {allUsers.map((u) => (
-                <option key={u} value={u} className="bg-[#1c252d] text-white">
-                  {u}
-                </option>
-              ))}
-            </select>
-          </div>
+          <ProfileSwitcher
+            users={allUsers}
+            currentUser={currentUser}
+            selected={selectedProfile}
+            friends={currentUserFriends}
+            onChange={setSelectedProfile}
+            getAvatarUrl={getAvatarUrl}
+          />
         </div>
 
       </div>

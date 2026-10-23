@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 
-const TMDB_API_KEY = 'e7fc358f1fb84ae5a56fda2f30e11a30';
+import { TMDB_API_KEY } from '../config';
 
 export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalog, showToast }) {
   const [tipo, setTipo] = useState('');
@@ -221,7 +221,7 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
       newItem.mb = {
         id: meta.id,
         title: meta.title,
-        artist: meta['artist-credit'] ? meta['artist-credit'][0].name : 'Artista Desconocido',
+        artist: meta['artist-credit'] ? meta['artist-credit'][0].name : 'Artista desconocido',
         year: meta.date ? meta.date.slice(0, 4) : '',
         cover: `https://coverartarchive.org/release/${meta.id}/front-250`
       };
@@ -264,35 +264,35 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-sm transition-all duration-300">
-      <div className="w-full max-w-lg p-6 bg-[#1c252d] border border-[#2c3440] rounded-xl shadow-2xl relative">
+      <div className="w-full max-w-lg p-6 bg-[#1c1a18] border border-[#2a2724] rounded-xl shadow-2xl relative">
         
         {/* Close Button (SVG instead of emoji) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-[#9ab] hover:text-white transition-colors p-1.5 rounded-full hover:bg-[#2c3440] cursor-pointer"
+          className="absolute top-4 right-4 text-[#bdb5a9] hover:text-white transition-colors p-1.5 rounded-full hover:bg-[#2a2724] cursor-pointer"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
           </svg>
         </button>
 
-        <h2 className="text-sm font-bold uppercase tracking-wider text-white mb-6 text-center font-display border-b border-[#2c3440] pb-3">
+        <h2 className="text-sm font-bold text-white mb-6 text-center font-display border-b border-[#2a2724] pb-3">
           Agregar a tu lista
         </h2>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Item Type Selector */}
           <div>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-[#667788] mb-2">
+            <label className="block text-[10px] font-bold text-[#8f877c] mb-2">
               Tipo de elemento
             </label>
             <select
               value={tipo}
               onChange={(e) => setTipo(e.target.value)}
-              className="w-full px-4 py-2.5 bg-[#2c3440] border border-[#445566] rounded text-white text-xs font-semibold focus:outline-none focus:border-[#00e054] focus:ring-1 focus:ring-[#00e054] cursor-pointer transition"
+              className="w-full px-4 py-2.5 bg-[#2a2724] border border-[#4a4540] rounded-lg text-white text-xs font-semibold focus:outline-none focus:border-[#e8a33d] focus:ring-1 focus:ring-[#e8a33d] cursor-pointer transition"
               required
             >
-              <option value="" className="text-[#667788]">Seleccionar categoría</option>
+              <option value="" className="text-[#8f877c]">Seleccionar categoría</option>
               <option value="serie">Serie</option>
               <option value="pelicula">Película</option>
               <option value="libro">Libro</option>
@@ -302,7 +302,7 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
 
           {/* Title Input & Autocomplete Dropdown */}
           <div className="relative" ref={menuRef}>
-            <label className="block text-[10px] font-bold uppercase tracking-wider text-[#667788] mb-2">
+            <label className="block text-[10px] font-bold text-[#8f877c] mb-2">
               Título
             </label>
             <div className="relative">
@@ -311,20 +311,20 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
                 value={titulo}
                 onChange={handleInputChange}
                 disabled={!tipo}
-                className="w-full px-4 py-2.5 bg-[#2c3440] border border-[#445566] rounded text-white text-xs focus:outline-none focus:border-[#00e054] focus:ring-1 focus:ring-[#00e054] disabled:opacity-40 transition"
+                className="w-full px-4 py-2.5 bg-[#2a2724] border border-[#4a4540] rounded-lg text-white text-xs focus:outline-none focus:border-[#e8a33d] focus:ring-1 focus:ring-[#e8a33d] disabled:opacity-40 transition"
                 placeholder={tipo ? `Buscar por título...` : 'Debe seleccionar un tipo de elemento'}
                 required
               />
               {loading && (
                 <div className="absolute right-3 top-2 flex items-center">
-                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-t-transparent border-[#00e054]" />
+                  <div className="animate-spin rounded-full h-4 w-4 border-2 border-t-transparent border-[#e8a33d]" />
                 </div>
               )}
             </div>
 
             {/* Suggestions list */}
             {showMenu && suggestions.length > 0 && (
-              <div className="absolute left-0 right-0 mt-1.5 max-h-60 overflow-y-auto bg-[#2c3440] border border-[#445566] rounded shadow-xl z-50">
+              <div className="absolute left-0 right-0 mt-1.5 max-h-60 overflow-y-auto bg-[#2a2724] border border-[#4a4540] rounded-lg shadow-xl z-50">
                 {suggestions.map((item) => {
                   let text = '';
                   let key = '';
@@ -345,14 +345,14 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
                     }`;
                   } else if (tipo === 'musica') {
                     key = `mu-${item.id}`;
-                    const artistName = item['artist-credit'] ? item['artist-credit'][0].name : 'Artista Desconocido';
+                    const artistName = item['artist-credit'] ? item['artist-credit'][0].name : 'Artista desconocido';
                     text = `${item.title} - ${artistName} ${item.date ? '(' + item.date.slice(0,4) + ')' : ''}`;
                   }
                   return (
                     <div
                       key={key}
                       onClick={() => handleSelectSuggestion(item)}
-                      className="px-4 py-2.5 text-xs text-white hover:bg-[#00e054]/10 hover:text-[#00e054] border-b border-[#445566]/20 last:border-b-0 cursor-pointer transition-colors"
+                      className="px-4 py-2.5 text-xs text-white hover:bg-[#e8a33d]/10 hover:text-[#e8a33d] border-b border-[#4a4540]/20 last:border-b-0 cursor-pointer transition-colors"
                     >
                       {text}
                     </div>
@@ -365,13 +365,13 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
           {/* Item State Selector */}
           {tipo && (
             <div>
-              <label className="block text-[10px] font-bold uppercase tracking-wider text-[#667788] mb-2">
+              <label className="block text-[10px] font-bold text-[#8f877c] mb-2">
                 Estado inicial en catálogo
               </label>
               <select
                 value={estado}
                 onChange={(e) => setEstado(e.target.value)}
-                className="w-full px-4 py-2.5 bg-[#2c3440] border border-[#445566] rounded text-white text-xs font-semibold focus:outline-none focus:border-[#00e054] focus:ring-1 focus:ring-[#00e054] cursor-pointer transition"
+                className="w-full px-4 py-2.5 bg-[#2a2724] border border-[#4a4540] rounded-lg text-white text-xs font-semibold focus:outline-none focus:border-[#e8a33d] focus:ring-1 focus:ring-[#e8a33d] cursor-pointer transition"
               >
                 <option value="completado">Completado ({getCompletadoLabel()})</option>
                 <option value="en_progreso">En Progreso ({getEnProgresoLabel()})</option>
@@ -383,7 +383,7 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
 
           {/* Success indicator (SVG instead of emoji) */}
           {selectedItemMeta.current && (
-            <div className="flex items-center gap-2 p-2.5 bg-[#00e054]/10 border border-[#00e054]/20 rounded text-center justify-center text-[10px] font-bold text-[#00e054] uppercase tracking-wider">
+            <div className="flex items-center gap-2 p-2.5 bg-[#e8a33d]/10 border border-[#e8a33d]/20 rounded-lg text-center justify-center text-[10px] font-bold text-[#e8a33d] ">
               <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" d="M4.5 12.75l6 6 9-13.5" />
               </svg>
@@ -395,7 +395,7 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
           <div className="flex gap-3 pt-3">
             <button
               type="submit"
-              className="flex-1 py-2.5 font-bold uppercase tracking-wider text-xs text-[#14181c] bg-[#00e054] hover:bg-[#00c048] rounded transition-all cursor-pointer"
+              className="flex-1 py-2.5 font-bold text-xs text-[#131211] bg-[#e8a33d] hover:bg-[#d48f2a] rounded-lg transition-all cursor-pointer"
             >
               Agregar
             </button>
@@ -407,7 +407,7 @@ export default function AddItemModal({ isOpen, onClose, onAddItem, currentCatalo
                 setEstado('completado');
                 onClose();
               }}
-              className="flex-1 py-2.5 font-bold uppercase tracking-wider text-xs text-white bg-[#2c3440] hover:bg-[#3d4957] border border-[#445566]/60 rounded transition-all cursor-pointer"
+              className="flex-1 py-2.5 font-bold text-xs text-white bg-[#2a2724] hover:bg-[#36322e] border border-[#4a4540]/60 rounded-lg transition-all cursor-pointer"
             >
               Cancelar
             </button>
